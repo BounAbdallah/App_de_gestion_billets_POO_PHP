@@ -6,23 +6,30 @@ $liste_clients = array(); // Initialisation de la variable $liste_clients
 
 try {
     // Connexion à la base de données
-    $connexion = new PDO("mysql:host=localhost;dbname=reservatio_billets", "root", ""); // Modifier avec vos informations de connexion
+    $connexion = new PDO("mysql:host=localhost;dbname=reservation_billets", "root", ""); // Modifier avec vos informations de connexion
     $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Création d'une instance de la classe Client
-    $client = new Client($connexion);
-
     // Récupérer tous les clients de la base de données
-    $liste_clients = $client->getAllClients();
-
+    $query = "SELECT * FROM client";
+    $result = $connexion->query($query);
     // Vérifier si des clients ont été récupérés
-    if (empty($liste_clients)) {
+    if ($result !== false) {
+        $liste_clients = $result->fetchAll(PDO::FETCH_ASSOC);
+    } else {
         echo "Aucun client trouvé.";
     }
+
+    // Parcourir la liste des clients et créer une instance de la classe Client pour chaque client
+    foreach ($liste_clients as $client_info) {
+        $client = new Client($connexion, $client_info['nom'], $client_info['prenom'], $client_info['email'], $client_info['adresse'], $client_info['telephone']);
+        // Utiliser l'instance de client si nécessaire
+    }
+
 } catch (PDOException $e) {
     echo "Erreur : " . $e->getMessage();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -41,7 +48,7 @@ try {
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">ID</th>
+                    <th scope="col">Id_client</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Prénom</th>
                     <th scope="col">Email</th>
@@ -53,7 +60,7 @@ try {
             <tbody>
                 <?php foreach ($liste_clients as $client) : ?>
                     <tr>
-                        <td><?php echo $client['id']; ?></td>
+                        <td><?php echo $client['id_client']; ?></td>
                         <td><?php echo $client['nom']; ?></td>
                         <td><?php echo $client['prenom']; ?></td>
                         <td><?php echo $client['email']; ?></td>
@@ -61,8 +68,8 @@ try {
                         <td><?php echo $client['telephone']; ?></td>
                         <td>
                             <!-- Boutons pour supprimer et modifier les clients -->
-                            <a href="supprimer_client.php?id=<?php echo $client['id']; ?>" class="btn btn-danger">Supprimer</a>
-                            <a href="modifier_client.php?id=<?php echo $client['id']; ?>" class="btn btn-primary">Modifier</a>
+                            <a href="supprimer_client.php?id=<?php echo $client['id_client']; ?>" class="btn btn-danger">Supprimer</a>
+                            <a href="modifier.php?id=<?php echo $client['id_client']; ?>" class="btn btn-primary">Modifier</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

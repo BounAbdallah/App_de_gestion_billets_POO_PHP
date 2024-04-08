@@ -75,15 +75,15 @@ class Client implements Iclient {
             $stmt = $this->connexion->prepare($query);
             
             // Liaison des valeurs aux paramètres de la requête
-            $stmt->bindParam(":nom", $this->nom);
-            $stmt->bindParam(":prenom", $this->prenom);
-            $stmt->bindParam(":email", $this->email);
-            $stmt->bindParam(":adresse", $this->adresse);
-            $stmt->bindParam(":telephone", $this->telephone);
+            $stmt->bindParam(":nom", $nom);
+            $stmt->bindParam(":prenom", $prenom);
+            $stmt->bindParam(":email", $email);
+            $stmt->bindParam(":adresse", $adresse);
+            $stmt->bindParam(":telephone", $telephone);
             
             // Exécution de la requête
             $stmt->execute();
-            header("location:index.php");
+            
             // Récupération de l'identifiant généré pour le nouveau client
             $this->id = $this->connexion->lastInsertId();
     
@@ -98,17 +98,18 @@ class Client implements Iclient {
     public function read() {
         try {
             // Préparation de la requête de sélection
-            $query = "SELECT * FROM client WHERE id = :id";
+            $query = "SELECT * FROM clients";
             $stmt = $this->connexion->prepare($query);
-            
-            // Liaison de la valeur du paramètre :id à l'identifiant passé en paramètre
-            $stmt->bindParam(":id", $id_client);
             
             // Exécution de la requête
             $stmt->execute();
             
+            // Récupération des résultats
+            $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            
             // Renvoi du résultat de la requête
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            header("location: index.php");
+            return $clients;
         } catch(PDOException $e) {
             // En cas d'erreur, afficher l'erreur et renvoyer false
             echo "Erreur lors de la lecture du client : " . $e->getMessage();
@@ -116,19 +117,20 @@ class Client implements Iclient {
         }
     }
     
-    public function update($id_client,$nom, $prenom, $email, $adresse, $telephone) {
+    
+    public function update($id_client, $nom, $prenom, $email, $adresse, $telephone) {
         try {
             // Préparation de la requête de mise à jour
-            $query = "UPDATE client SET nom = :nom, prenom = :prenom, email = :email, adresse = :adresse, telephone = :telephone WHERE id = :id";
+            $query = "UPDATE client SET nom = :nom, prenom = :prenom, email = :email, adresse = :adresse, telephone = :telephone WHERE id_client = :id";
             $stmt = $this->connexion->prepare($query);
             
             // Liaison des valeurs aux paramètres de la requête
-            $stmt->bindParam(":id", $this->id);
-            $stmt->bindParam(":nom", $this->nom);
-            $stmt->bindParam(":prenom", $this->prenom);
-            $stmt->bindParam(":email", $this->email);
-            $stmt->bindParam(":adresse", $this->adresse);
-            $stmt->bindParam(":telephone", $this->telephone);
+            $stmt->bindParam(":id", $id_client);
+            $stmt->bindParam(":nom", $nom);
+            $stmt->bindParam(":prenom", $prenom);
+            $stmt->bindParam(":email", $email);
+            $stmt->bindParam(":adresse", $adresse);
+            $stmt->bindParam(":telephone", $telephone);
             
             // Exécution de la requête
             $stmt->execute();
@@ -140,6 +142,7 @@ class Client implements Iclient {
             return false;
         }
     }
+    
     
     public function delete() {
         try {

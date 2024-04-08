@@ -22,7 +22,7 @@ $email = "example@example.com";
 $telephone = "+1234567890";
 
 if (validateName($nom) && validateName($prenom)) {
-    echo "Le nom et le prénom sont valides.";
+    
 } else {
     echo "Le nom et/ou le prénom sont invalides.";
 }
@@ -30,7 +30,7 @@ if (validateName($nom) && validateName($prenom)) {
 echo "<br>";
 
 if (validateEmail($email)) {
-    echo "L'adresse e-mail est valide.";
+    
 } else {
     echo "L'adresse e-mail est invalide.";
 }
@@ -38,7 +38,7 @@ if (validateEmail($email)) {
 echo "<br>";
 
 if (validatePhoneNumber($telephone)) {
-    echo "Le numéro de téléphone est valide.";
+    
 } else {
     echo "Le numéro de téléphone est invalide.";
 }
