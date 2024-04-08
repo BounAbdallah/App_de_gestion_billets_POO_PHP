@@ -1,6 +1,18 @@
 <?php
 require_once("config.php");
 
+// Instanciation de l'objet client
+$client = new Client();
+
+// Récupération des données des clients depuis la base de données
+$clients = $client->read();
+
+// Instanciation de l'objet reservation
+$reservation = new Reservation();
+
+// Récupération des données des réservations depuis la base de données
+$reservations = $reservation->read();
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // RECUPERATION DES INFORMATIONS DU FORMULAIRE
     $id = htmlspecialchars($_POST["id"]); // Ajoutez un champ caché dans votre formulaire pour stocker l'ID du billet à mettre à jour
@@ -9,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_client = htmlspecialchars($_POST["id_client"]);
     $id_reservation = htmlspecialchars($_POST["id_reservation"]);
 
-    if ($date_heure_depart != "" && $statut != "" &&  $id_client != "" && $id_reservation != "") {
+    if ($date_heure_depart != "" && $statut != "" && $id_client != "" && $id_reservation != "") {
         // MISE A JOUR DU BILLET
-        $update_billet = $billet->update($id, $date_heure_depart, $statut, $id_client, $id_reservation);
+        $billet->update($id, $date_heure_depart, $statut, $id_client, $id_reservation);
     }
 }
 ?>
@@ -67,3 +79,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </body>
 
 </html>
+
+
+
